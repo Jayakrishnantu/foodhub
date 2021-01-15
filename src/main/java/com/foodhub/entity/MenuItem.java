@@ -1,10 +1,15 @@
 package com.foodhub.entity;
 
+import com.foodhub.repository.RestaurantRepository;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.math.BigDecimal;
 
@@ -28,14 +33,21 @@ public class MenuItem {
     @Column(name="prep_time")
     private Integer prepTime;
 
+    @ManyToOne(cascade = {CascadeType.PERSIST,
+            CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
+    @JoinColumn(name = "restaurant_id")
+    private Restaurant restaurant;
+
     public MenuItem() {
     }
 
-    public MenuItem(String name, String description, BigDecimal price, Integer prepTime) {
+    public MenuItem(String name, String description,
+                    BigDecimal price, Integer prepTime, Restaurant restaurant) {
         this.name = name;
         this.description = description;
         this.price = price;
         this.prepTime = prepTime;
+        this.restaurant = restaurant;
     }
 
     public long getId() {
@@ -76,5 +88,13 @@ public class MenuItem {
 
     public void setPrepTime(Integer prepTime) {
         this.prepTime = prepTime;
+    }
+
+    public Restaurant getRestaurant() {
+        return restaurant;
+    }
+
+    public void setRestaurant(Restaurant restaurant) {
+        this.restaurant = restaurant;
     }
 }

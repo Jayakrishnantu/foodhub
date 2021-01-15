@@ -10,4 +10,6 @@ public interface MenuService {
     public MenuItem addMenuItem(MenuItemRequest menuItem);
 
     public List<MenuItem> fetchMenu();
+
+    public List<MenuItem> fetchMenuByRestaurant(Long restaurantId);
 }

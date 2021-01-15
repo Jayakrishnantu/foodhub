@@ -29,16 +29,20 @@ public class User {
     @Column(name="password")
     private String password;
 
+    @Column(name="contact")
+    private String contact;
+
     @OneToMany(mappedBy = "user", cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
     private Set<Role> roles = new HashSet<Role>();
 
     public User() {
     }
 
-    public User(String name, String userName, String password) {
+    public User(String name, String userName, String password, String contact) {
         this.name = name;
         this.userName = userName;
         this.password = password;
+        this.contact = contact;
     }
 
     public Long getId() {
@@ -79,5 +83,13 @@ public class User {
 
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
+    }
+
+    public String getContact() {
+        return contact;
+    }
+
+    public void setContact(String contact) {
+        this.contact = contact;
     }
 }

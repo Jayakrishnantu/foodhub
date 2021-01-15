@@ -1,44 +1,47 @@
 package com.foodhub.payload;
 
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import java.math.BigDecimal;
 
-public class MenuItemRequest {
+public class MenuItemResponse {
 
-    @NotNull
-    @Size(max=50)
-    private String name;
-
-    @Size(max=255)
+    private Long itemId;
+    private String itemName;
     private String description;
-
-    @NotNull
     private BigDecimal price;
-
-    @NotNull
     private Integer prepTime;
-
-    @NotNull
     private Long restaurantId;
+    private String restaurantName;
 
-    public MenuItemRequest() {
+    public MenuItemResponse() {
     }
 
-    public MenuItemRequest(String name, String description, BigDecimal price, Integer prepTime, Long restaurantId) {
-        this.name = name;
+    public MenuItemResponse(Long itemId, String itemName,
+                            String description, BigDecimal price,
+                            Integer prepTime, Long restaurantId,
+                            String restaurantName) {
+        this.itemId = itemId;
+        this.itemName = itemName;
         this.description = description;
         this.price = price;
         this.prepTime = prepTime;
         this.restaurantId = restaurantId;
+        this.restaurantName = restaurantName;
     }
 
-    public String getName() {
-        return name;
+    public Long getItemId() {
+        return itemId;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setItemId(Long itemId) {
+        this.itemId = itemId;
+    }
+
+    public String getItemName() {
+        return itemName;
+    }
+
+    public void setItemName(String itemName) {
+        this.itemName = itemName;
     }
 
     public String getDescription() {
@@ -71,5 +74,13 @@ public class MenuItemRequest {
 
     public void setRestaurantId(Long restaurantId) {
         this.restaurantId = restaurantId;
+    }
+
+    public String getRestaurantName() {
+        return restaurantName;
+    }
+
+    public void setRestaurantName(String restaurantName) {
+        this.restaurantName = restaurantName;
     }
 }
