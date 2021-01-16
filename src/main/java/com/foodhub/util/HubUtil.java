@@ -7,15 +7,23 @@ import com.foodhub.entity.Restaurant;
 import com.foodhub.payload.DeliveryOrderResponse;
 import com.foodhub.payload.MenuItemRequest;
 import com.foodhub.payload.MenuItemResponse;
+import com.foodhub.payload.OrderCreateResponse;
 import com.foodhub.payload.OrderResponse;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class HubUtil {
+
+    @Autowired
+    ReloadableResourceBundleMessageSource hubMessages;
 
     public MenuItem createMenuItem(MenuItemRequest menuItem, Restaurant restaurant){
         return new MenuItem(menuItem.getName(),
@@ -111,5 +119,24 @@ public class HubUtil {
 
     public BigDecimal findItemTotal(Integer qty, BigDecimal unitPrice){
         return unitPrice.multiply(BigDecimal.valueOf(qty.longValue()));
+    }
+
+    public OrderCreateResponse createOrderCreateResponse(Order order, String message){
+        OrderCreateResponse response = new OrderCreateResponse(order.getOrderId(),
+                order.getPrepTime(),
+                order.getDeliveryTime(),
+                message,
+                order.getItemTotal().setScale(2, RoundingMode.HALF_UP),
+                order.getTax().setScale(2, RoundingMode.HALF_UP),
+                order.getDeliveryCharge().setScale(2, RoundingMode.HALF_UP),
+                order.getTotal().setScale(2, RoundingMode.HALF_UP),
+                order.getRestaurant().getRestaurantName(),
+                order.getUser().getUserName());
+
+        return response;
+    }
+
+    public String readMessage(String code){
+        return hubMessages.getMessage(code, null, LocaleContextHolder.getLocale());
     }
 }

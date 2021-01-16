@@ -1,8 +1,10 @@
 package com.foodhub.controller;
 
+import com.foodhub.exception.NotAuthorizedException;
 import com.foodhub.payload.AuthenticationRequest;
 import com.foodhub.payload.AuthenticationResponse;
 import com.foodhub.security.JWTokenGenerator;
+import com.foodhub.util.HubUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +32,9 @@ public class AuthenticationController {
     @Autowired
     JWTokenGenerator jwTokenGenerator;
 
+    @Autowired
+    HubUtil hubUtil;
+
     @PostMapping(value="/authenticate")
     public ResponseEntity<AuthenticationResponse> authenticateUser(
             @RequestBody AuthenticationRequest request) throws Exception {
@@ -43,7 +48,7 @@ public class AuthenticationController {
             );
         }catch(BadCredentialsException exception){
             logger.error("Authentication Failed: Invalid username or password.");
-            throw new Exception("Invalid Username or Password!");
+            throw new NotAuthorizedException(hubUtil.readMessage("hub.signin.error"));
         }
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -56,6 +61,6 @@ public class AuthenticationController {
 
     @GetMapping("/hello")
     public String sayHello(){
-        return "Hello World testing...";
+        return hubUtil.readMessage("default.title");
     }
 }
