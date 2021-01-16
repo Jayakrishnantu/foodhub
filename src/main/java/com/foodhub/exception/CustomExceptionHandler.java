@@ -7,10 +7,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.support.WebExchangeBindException;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import javax.ws.rs.NotAuthorizedException;
-import java.util.Date;
+import java.net.BindException;
 
 @ControllerAdvice
 public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
@@ -66,19 +67,6 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler(NotAuthorizedException.class)
-    public final ResponseEntity<ErrorMessage> handleNotAuthorizedException(NotAuthorizedException exception) {
-
-        logger.error(exception.getMessage());
-
-        ErrorMessage response = new ErrorMessage();
-        response.setStatus(HttpStatus.UNAUTHORIZED.value());
-        response.setMessage(exception.getMessage());
-        response.setTimestamp(System.currentTimeMillis());
-
-        return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
-    }
-
     @ExceptionHandler(MenuItemCreateException.class)
     public final ResponseEntity<ErrorMessage> handleMenuItemCreateException(MenuItemCreateException exception) {
 
@@ -94,6 +82,47 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(MenuFetchException.class)
     public final ResponseEntity<ErrorMessage> handleMenuFetchException(MenuFetchException exception) {
+
+        logger.error(exception.getMessage());
+
+        ErrorMessage response = new ErrorMessage();
+        response.setStatus(HttpStatus.BAD_REQUEST.value());
+        response.setMessage(exception.getMessage());
+        response.setTimestamp(System.currentTimeMillis());
+
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(NotAuthorizedException.class)
+    public final ResponseEntity<ErrorMessage> handleOrderCancelException(NotAuthorizedException exception) {
+
+        logger.error(exception.getMessage());
+
+        ErrorMessage response = new ErrorMessage();
+        response.setStatus(HttpStatus.UNAUTHORIZED.value());
+        response.setMessage(exception.getMessage());
+        response.setTimestamp(System.currentTimeMillis());
+
+        return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public final ResponseEntity<ErrorMessage> handleMethodArgumentTypeMismatchException(
+            MethodArgumentTypeMismatchException exception) {
+
+        logger.error(exception.getMessage());
+
+        ErrorMessage response = new ErrorMessage();
+        response.setStatus(HttpStatus.BAD_REQUEST.value());
+        response.setMessage("Invalid input parameter(s).");
+        response.setTimestamp(System.currentTimeMillis());
+
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(OrderStatusNotifyException.class)
+    public final ResponseEntity<ErrorMessage> handleOrderStatusNotifyException(
+            OrderStatusNotifyException exception) {
 
         logger.error(exception.getMessage());
 

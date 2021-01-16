@@ -32,17 +32,21 @@ public class User {
     @Column(name="contact")
     private String contact;
 
+    @Column(name="restaurant_id")
+    private Long restaurantId;
+
     @OneToMany(mappedBy = "user", cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
     private Set<Role> roles = new HashSet<Role>();
 
     public User() {
     }
 
-    public User(String name, String userName, String password, String contact) {
+    public User(String name, String userName, String password, String contact, Long restaurantId) {
         this.name = name;
         this.userName = userName;
         this.password = password;
         this.contact = contact;
+        this.restaurantId = restaurantId;
     }
 
     public Long getId() {
@@ -91,5 +95,13 @@ public class User {
 
     public void setContact(String contact) {
         this.contact = contact;
+    }
+
+    public Long getRestaurantId() {
+        return restaurantId;
+    }
+
+    public void setRestaurantId(Long restaurantId) {
+        this.restaurantId = restaurantId;
     }
 }

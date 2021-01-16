@@ -57,7 +57,7 @@ public class JWTRequestFilter extends OncePerRequestFilter {
                     .setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
             SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
 
-            logger.error("Authentication of token is now complete.");
+            logger.info("Authentication of token is now complete.");
 
         }else{
             logger.error("Could not find the token in request header.");

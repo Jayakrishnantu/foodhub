@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface MenuService {
 
-    public MenuItem addMenuItem(MenuItemRequest menuItem);
+    public MenuItem addMenuItem(Long userId, MenuItemRequest menuItem);
 
     public List<MenuItem> fetchMenu();
 
