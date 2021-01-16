@@ -1,6 +1,6 @@
 package com.foodhub.util;
 
-import com.foodhub.security.HubUserDetailsService;
+import com.foodhub.services.HubUserDetailsService;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 

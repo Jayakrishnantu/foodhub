@@ -1,5 +1,8 @@
 package com.foodhub.exception;
 
+/**
+ * Exception thrown when the Order Not found in system
+ */
 public class OrderNotFoundException extends RuntimeException{
     public OrderNotFoundException(String message) {
         super(message);

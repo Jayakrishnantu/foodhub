@@ -1,5 +1,8 @@
 package com.foodhub.payload;
 
+/**
+ * Payload Carrying Order Cancel Response
+ */
 public class OrderCancelResponse {
 
     private long orderId;

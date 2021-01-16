@@ -1,5 +1,8 @@
 package com.foodhub.payload;
 
+/**
+ * Payload Carrying Create Item Request
+ */
 public class OrderCreateItem {
 
         private Long item;

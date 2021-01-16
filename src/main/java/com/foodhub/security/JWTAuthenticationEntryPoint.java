@@ -11,6 +11,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+/**
+ * JWT Authentication Entry Point for checking request authority
+ */
 @Component
 public class JWTAuthenticationEntryPoint implements AuthenticationEntryPoint {
 

@@ -1,5 +1,6 @@
 package com.foodhub.util;
 
+import com.foodhub.constants.HubConstants;
 import com.foodhub.entity.MenuItem;
 import com.foodhub.entity.Order;
 import com.foodhub.entity.OrderItem;
@@ -9,18 +10,30 @@ import com.foodhub.payload.MenuItemRequest;
 import com.foodhub.payload.MenuItemResponse;
 import com.foodhub.payload.OrderCreateResponse;
 import com.foodhub.payload.OrderResponse;
+import com.itextpdf.text.BaseColor;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.Font;
+import com.itextpdf.text.FontFactory;
+import com.itextpdf.text.Phrase;
+import com.itextpdf.text.Rectangle;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.stereotype.Service;
 
+import java.io.ByteArrayOutputStream;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class HubUtil {
+public class HubUtil implements HubConstants {
 
     @Autowired
     ReloadableResourceBundleMessageSource hubMessages;
@@ -139,4 +152,11 @@ public class HubUtil {
     public String readMessage(String code){
         return hubMessages.getMessage(code, null, LocaleContextHolder.getLocale());
     }
+
+    public String getItemPrice(OrderItem item){
+        return findItemTotal(item.getQty(), item.getItem().getPrice())
+                .setScale(2, RoundingMode.HALF_UP).toString();
+    }
+
+
 }

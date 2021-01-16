@@ -9,6 +9,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * UserDetails Implementation for FoodHub App
+ */
 public class UserPrincipal implements UserDetails {
 
     private Long id;

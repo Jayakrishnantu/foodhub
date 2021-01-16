@@ -6,6 +6,9 @@ import javax.validation.constraints.Size;
 import java.math.BigDecimal;
 import java.util.List;
 
+/**
+ * Payload Carrying Order Create Request
+ */
 public class OrderCreateRequest {
 
     @NotNull

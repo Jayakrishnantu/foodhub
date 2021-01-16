@@ -5,6 +5,9 @@ import com.foodhub.payload.MenuItemRequest;
 
 import java.util.List;
 
+/**
+ * Menu Service Template
+ */
 public interface MenuService {
 
     public MenuItem addMenuItem(Long userId, MenuItemRequest menuItem);

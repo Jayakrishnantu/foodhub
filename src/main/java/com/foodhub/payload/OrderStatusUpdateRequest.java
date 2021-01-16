@@ -4,6 +4,9 @@ import com.foodhub.entity.OrderStatus;
 
 import javax.validation.constraints.NotNull;
 
+/**
+ * Payload Carrying Order Status Update Request
+ */
 public class OrderStatusUpdateRequest {
 
     @NotNull

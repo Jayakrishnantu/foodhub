@@ -1,6 +1,7 @@
 package com.foodhub.security;
 
 import com.foodhub.filter.JWTRequestFilter;
+import com.foodhub.services.HubUserDetailsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+/**
+ * Security Configuration for Food Hub App
+ */
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(
         securedEnabled = true,
@@ -58,6 +62,7 @@ public class FoodHubSecurity extends WebSecurityConfigurerAdapter {
         http.cors().and().csrf().disable()
                 .authorizeRequests()
                     .antMatchers("/api/user/authenticate").permitAll()
+                    .antMatchers("/api/order/invoice/**").permitAll()
                     //.antMatchers("/api/test/**").permitAll()
                 .anyRequest().authenticated()
                 .and()

@@ -1,5 +1,12 @@
 package com.foodhub.exception;
 
+/**
+ * POJO class for holding Error Send Back to Clients.
+ * Carries:
+ *  HTTP Status Code
+ *  Error Message
+ *  Timestamp
+ */
 public class ErrorMessage {
 
     private int status;

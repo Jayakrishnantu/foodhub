@@ -8,6 +8,9 @@ import com.foodhub.payload.OrderStatusUpdateRequest;
 
 import java.util.List;
 
+/**
+ * Order Service Template
+ */
 public interface OrderService {
 
     public Order createOrder(OrderCreateRequest request);
@@ -29,4 +32,6 @@ public interface OrderService {
     public void notifyOrderPickUp(Long orderId);
 
     public void notifyOrderDelivery(Long orderId);
+
+    public Order fetchInvoiceOrder(Long userId, Long orderId);
 }

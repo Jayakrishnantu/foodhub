@@ -13,6 +13,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.math.BigDecimal;
 
+/**
+ * Menu Item Entity Object
+ */
 @Entity
 @Table(name="items")
 public class MenuItem {

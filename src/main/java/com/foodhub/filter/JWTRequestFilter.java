@@ -1,6 +1,6 @@
 package com.foodhub.filter;
 
-import com.foodhub.security.HubUserDetailsService;
+import com.foodhub.services.HubUserDetailsService;
 import com.foodhub.security.JWTokenGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,6 +19,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+/**
+ * JWT Request filter for validating the Bearer Token
+ */
 @Component
 public class JWTRequestFilter extends OncePerRequestFilter {
 
@@ -57,7 +60,7 @@ public class JWTRequestFilter extends OncePerRequestFilter {
                     .setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
             SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
 
-            logger.info("Authentication of token is now complete.");
+            logger.debug("Authentication of token is now complete.");
 
         }else{
             logger.error("Could not find the token in request header.");

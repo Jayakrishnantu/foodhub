@@ -2,7 +2,9 @@ package com.foodhub.payload;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-
+/**
+ * Payload Carrying Order Cancel Request
+ */
 public class OrderCancelRequest {
 
     @NotNull

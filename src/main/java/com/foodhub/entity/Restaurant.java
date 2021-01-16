@@ -7,6 +7,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+/**
+ * Entity for Restaurant Objects
+ */
 @Entity
 @Table(name = "restaurants")
 public class Restaurant {

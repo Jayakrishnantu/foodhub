@@ -2,6 +2,9 @@ package com.foodhub.payload;
 
 import java.math.BigDecimal;
 
+/**
+ * Payload Carrying Order Create Response
+ */
 public class OrderCreateResponse {
 
     private Long orderId;

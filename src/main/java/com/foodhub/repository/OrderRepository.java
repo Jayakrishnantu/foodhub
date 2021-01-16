@@ -11,14 +11,20 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+/**
+ * Repository for Order
+ */
 @Repository
 public interface OrderRepository extends JpaRepository<Order, Long> {
 
+    // derived method -findByRestaurant
     List<Order> findByRestaurant(Restaurant restaurant);
 
+    // Custom query
     @Query("SELECT ord FROM Order ord WHERE status IN ('STATUS_RECEIVED', 'STATUS_IN_KITCHEN', 'STATUS_READY') " +
             "and restaurant = :restaurant")
     List<Order> findActiveOrdersByRestaurant(@Param("restaurant")Restaurant restaurant);
 
+    // derived method - findByStatusEqualsOrderByRestaurant
     List<Order> findByStatusEqualsOrderByRestaurant(OrderStatus status);
 }

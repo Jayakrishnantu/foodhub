@@ -1,7 +1,8 @@
-package com.foodhub.security;
+package com.foodhub.services;
 
 import com.foodhub.entity.User;
 import com.foodhub.repository.UserRepository;
+import com.foodhub.security.UserPrincipal;
 import com.foodhub.util.HubUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -11,6 +12,9 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 
+/**
+ * User Details Service Implementation for Authentication
+ */
 @Service
 public class HubUserDetailsService implements UserDetailsService {
 

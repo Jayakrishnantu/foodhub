@@ -1,5 +1,8 @@
 package com.foodhub.exception;
 
+/**
+ * Exception thrown during Order Creation
+ */
 public class OrderCreateException extends RuntimeException{
 
     public OrderCreateException(String message) {

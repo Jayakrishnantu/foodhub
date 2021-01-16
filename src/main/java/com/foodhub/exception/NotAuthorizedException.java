@@ -1,5 +1,8 @@
 package com.foodhub.exception;
 
+/**
+ * Exception thrown if the action is not authorized.
+ */
 public class NotAuthorizedException extends RuntimeException{
     public NotAuthorizedException(String message) {
         super(message);

@@ -12,6 +12,9 @@ import javax.persistence.Table;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * Entity for User Role objects
+ */
 @Entity
 @Table(name="users")
 public class User {

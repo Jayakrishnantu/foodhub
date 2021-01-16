@@ -20,6 +20,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * Controller Handling User Authentication
+ */
 @RestController
 @RequestMapping("/api/user")
 public class AuthenticationController {
@@ -38,9 +41,7 @@ public class AuthenticationController {
     @PostMapping(value="/authenticate")
     public ResponseEntity<AuthenticationResponse> authenticateUser(
             @RequestBody AuthenticationRequest request) throws Exception {
-
-        logger.info("initiating authentication.");
-
+        logger.debug("initiating authentication.");
         Authentication authentication;
         try {
             authentication = authManager.authenticate(
@@ -52,10 +53,8 @@ public class AuthenticationController {
         }
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
-
         String jwToken = jwTokenGenerator.generateToken(authentication);
-
-        logger.info("authentication now complete.");
+        logger.debug("authentication now complete.");
         return ResponseEntity.ok(new AuthenticationResponse(jwToken));
     }
 

@@ -2,6 +2,9 @@ package com.foodhub.payload;
 
 import java.math.BigDecimal;
 
+/**
+ * Payload Carrying Menu Item Response
+ */
 public class MenuItemResponse {
 
     private Long itemId;

@@ -12,11 +12,15 @@ import com.foodhub.payload.OrderStatusUpdateRequest;
 import com.foodhub.payload.OrderStatusUpdateResponse;
 import com.foodhub.security.JWTokenGenerator;
 import com.foodhub.services.OrderService;
+import com.foodhub.util.HubInvoiceUtil;
 import com.foodhub.util.HubUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,8 +33,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.io.ByteArrayInputStream;
 import java.util.List;
 
+/**
+ * Controller handling all Order related requests.
+ */
 @RestController
 @RequestMapping("/api/order")
 public class OrderController {
@@ -46,6 +54,9 @@ public class OrderController {
     @Autowired
     private HubUtil hubUtil;
 
+    @Autowired
+    HubInvoiceUtil invoiceUtil;
+
     @PostMapping("/create")
     @PreAuthorize("hasRole('CUSTOMER')")
     public ResponseEntity<OrderCreateResponse> createOrder(@RequestBody OrderCreateRequest request,
@@ -56,9 +67,7 @@ public class OrderController {
 
         Order order = service.createOrder(request);
         if(null != order && 0 != order.getOrderId()) {
-            logger.info("Order Created.");
-            logger.info(order.getRestaurant().toString());
-
+            logger.debug("Order Created."+ order.getRestaurant().toString());
             return new ResponseEntity<>(hubUtil.createOrderCreateResponse(order,
                     hubUtil.readMessage("hub.order.create.success")), HttpStatus.OK);
         }else{
@@ -77,12 +86,11 @@ public class OrderController {
         Order order = service.createOrderOnBehalf(request, userId);
 
         if(null != order && 0 != order.getOrderId()) {
-            logger.info("Order Created.");
-            logger.info(order.getRestaurant().toString());
+            logger.debug("Order Created On behalf. "+ order.getOrderId());
             return new ResponseEntity<>(hubUtil.createOrderCreateResponse(order,
                     hubUtil.readMessage("hub.order.create.on.behalf.success")), HttpStatus.OK);
         }else{
-            logger.error("Order Creation failed.");
+            logger.error("Failed to create order on behalf.");
             throw new OrderCreateException(hubUtil.readMessage("hub.order.create.failure"));
         }
     }
@@ -99,10 +107,10 @@ public class OrderController {
         OrderCancelResponse response = new OrderCancelResponse();
         response.setOrderId(request.getOrderId());
         if(result) {
-            logger.info("Order Cancelled.");
+            logger.debug("Order Cancelled.");
             response.setMessage(hubUtil.readMessage("hub.order.cancel.success"));
         }else{
-            logger.error("Order Creation failed.");
+            logger.error("Order Creation failed - "+ request.getOrderId());
             response.setMessage(hubUtil.readMessage("hub.order.cancel.failure"));
         }
         return new ResponseEntity<>(response, HttpStatus.OK);
@@ -115,10 +123,10 @@ public class OrderController {
         OrderStatusUpdateResponse response = new OrderStatusUpdateResponse();
 
         if(service.statusUpdateOrder(request)){
-            logger.info("Order status updated.");
+            logger.debug("Order status updated.");
             response.setMessage(hubUtil.readMessage("hub.order.status.update.success"));
         }else{
-            logger.info("Order status NOT updated.");
+            logger.error("Order status NOT updated "+ request.getOrderId());
             response.setMessage(hubUtil.readMessage("hub.order.status.update.failure"));
         }
         return new ResponseEntity<>(response, HttpStatus.OK);
@@ -128,6 +136,7 @@ public class OrderController {
     @PreAuthorize("hasRole('SHOP')")
     public List<OrderResponse> findOrders(@RequestHeader("Authorization") String jwToken){
         long userId = tokenGenerator.getUserIdFromJWT(hubUtil.getToken(jwToken));
+        logger.debug("Pulling all the orders.");
         return hubUtil.createOrderResponses(service.fetchOrders(userId));
     }
 
@@ -135,6 +144,7 @@ public class OrderController {
     @PreAuthorize("hasRole('SHOP')")
     public List<OrderResponse> findActiveOrders(@RequestHeader("Authorization") String jwToken){
         long userId = tokenGenerator.getUserIdFromJWT(hubUtil.getToken(jwToken));
+        logger.debug("Pulling all the active orders.");
         return hubUtil.createOrderResponses(service.fetchActiveOrders(userId));
     }
 
@@ -143,12 +153,14 @@ public class OrderController {
     public OrderResponse getOrderDetails(@RequestHeader("Authorization") String jwToken,
                                          @Valid @PathVariable(value = "orderId") Long orderId){
         long userId = tokenGenerator.getUserIdFromJWT(hubUtil.getToken(jwToken));
+        logger.debug("Finding the order : "+ orderId);
         return hubUtil.createOrderResponse(service.fetchOrderById(userId, orderId));
     }
 
     @GetMapping("pickup")
     @PreAuthorize("hasAnyRole('SHOP','ADMIN', 'DRIVER')")
     public List<DeliveryOrderResponse> getReadyForPickUpOrders(){
+        logger.debug("Finding Ready for pick up orders.");
         return hubUtil.createDeliveryResponses(service.fetchReadyForPickUpOrders());
     }
 
@@ -156,6 +168,7 @@ public class OrderController {
     @PreAuthorize("hasRole('DRIVER')")
     public ResponseEntity<?> notifyOrderPickUp(@Valid @PathVariable(value = "orderId") Long orderId){
         service.notifyOrderPickUp(orderId);
+        logger.debug("Order pick up notified. # "+ orderId);
         return new ResponseEntity<>(hubUtil.readMessage("hub.order.pickup.notify"), HttpStatus.OK);
     }
 
@@ -163,6 +176,27 @@ public class OrderController {
     @PreAuthorize("hasRole('DRIVER')")
     public ResponseEntity<?> notifyOrderDelivery(@Valid @PathVariable(value = "orderId") Long orderId){
         service.notifyOrderDelivery(orderId);
+        logger.debug("Order delivery notified. # "+ orderId);
         return new ResponseEntity<>(hubUtil.readMessage("hub.order.delivery.notify"), HttpStatus.OK);
+    }
+
+    @GetMapping("/invoice/{orderId}")
+    @PreAuthorize("hasRole('SHOP')")
+    public ResponseEntity<?> generateInvoice(@Valid @PathVariable(value = "orderId") Long orderId,
+                                             @RequestHeader("Authorization") String jwToken){
+        long userId = tokenGenerator.getUserIdFromJWT(hubUtil.getToken(jwToken));
+        Order order = service.fetchInvoiceOrder(userId, orderId);
+        ByteArrayInputStream pdfStream = invoiceUtil.generatePdfStream(order);
+        logger.debug("Invoice generate for order "+ orderId);
+
+        String fileName = "invoice_"+orderId+".pdf";
+        var headers = new HttpHeaders();
+        headers.add("Content-Disposition", "inline; filename="+fileName);
+
+        return ResponseEntity
+                .ok()
+                .headers(headers)
+                .contentType(MediaType.APPLICATION_PDF)
+                .body(new InputStreamResource(pdfStream));
     }
 }

@@ -19,6 +19,7 @@
 		<java.web.api.version>7.0</java.web.api.version>
 		<jjwt.version>0.9.1</jjwt.version>
 		<javax.xml.bind.version>2.3.0</javax.xml.bind.version>
+		<itextpd.version>5.5.13.2</itextpd.version>
 	</properties>
 
 	<dependencies>
@@ -68,7 +69,12 @@
 			<scope>runtime</scope>
 			<optional>true</optional>
 		</dependency>
-
+		<!-- itextpdf dependency-->
+		<dependency>
+			<groupId>com.itextpdf</groupId>
+			<artifactId>itextpdf</artifactId>
+			<version>${itextpd.version}</version>
+		</dependency>
 		<!-- Spring starter test -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

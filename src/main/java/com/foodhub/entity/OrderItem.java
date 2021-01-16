@@ -12,6 +12,9 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import java.math.BigDecimal;
 
+/**
+ * Order Item Entity Object
+ */
 @Entity
 @Table(name="orderitems")
 public class OrderItem {

@@ -23,6 +23,9 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 import java.util.List;
 
+/**
+ * Controller Handling All Menu Related Services.
+ */
 @RestController
 @RequestMapping("/api/menu/")
 public class MenuController {
@@ -41,14 +44,14 @@ public class MenuController {
     @GetMapping("/all")
     @PreAuthorize("hasRole('ADMIN')")
     public List<MenuItemResponse> fetchMenu(){
-        logger.info("fetching all items");
+        logger.debug("fetching all items");
         return hubUtil.createMenuItemResponse(menuService.fetchMenu());
     }
 
     @GetMapping("/restaurant/{id}")
     @PreAuthorize("hasAnyRole('SHOP','CUSTOMER', 'ADMIN')")
     public List<MenuItemResponse> fetchMenuByRestaurant(@Valid @PathVariable("id") Long restaurantId ){
-        logger.info("fetching menu for the restaurant : "+ restaurantId);
+        logger.debug("fetching menu for the restaurant : "+ restaurantId);
         return hubUtil.createMenuItemResponse(menuService.fetchMenuByRestaurant(restaurantId));
     }
 
@@ -56,11 +59,9 @@ public class MenuController {
     @PreAuthorize("hasRole('SHOP')")
     public ResponseEntity<?> addMenuItem(@RequestBody MenuItemRequest request,
                                          @RequestHeader("Authorization") String jwToken){
-
         long userId = tokenGenerator.getUserIdFromJWT(hubUtil.getToken(jwToken));
-
         MenuItem item = menuService.addMenuItem(userId, request);
-        logger.info("Menu Item Created.");
+        logger.debug("Menu Item Created.");
         return new ResponseEntity<>(hubUtil.readMessage("hub.menu.item.create.success"), HttpStatus.OK);
     }
 }

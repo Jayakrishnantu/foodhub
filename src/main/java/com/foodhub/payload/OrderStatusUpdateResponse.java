@@ -1,5 +1,8 @@
 package com.foodhub.payload;
 
+/**
+ * Payload Carrying Order Status Update Response
+ */
 public class OrderStatusUpdateResponse {
 
     private long orderId;

@@ -1,5 +1,8 @@
 package com.foodhub.exception;
 
+/**
+ * Exception thrown during Order Status Notify.
+ */
 public class OrderStatusNotifyException extends RuntimeException{
 
     public OrderStatusNotifyException(String message) {

@@ -14,6 +14,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+/**
+ * Entity for Role Objects.
+ */
 @Entity
 @Table(name="roles")
 public class Role {

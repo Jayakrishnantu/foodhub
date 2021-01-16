@@ -16,6 +16,9 @@ import javax.persistence.Table;
 import java.math.BigDecimal;
 import java.util.List;
 
+/**
+ * Order Entity Object
+ */
 @Entity
 @Table(name="orders")
 public class Order {

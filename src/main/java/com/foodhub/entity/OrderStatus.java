@@ -3,6 +3,9 @@ package com.foodhub.entity;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Enum for holding the Order Status
+ */
 public enum OrderStatus {
     STATUS_RECEIVED(1, "Order Received"),
     STATUS_IN_KITCHEN(2, "In Kitchen"),

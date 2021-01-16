@@ -18,9 +18,10 @@ import com.foodhub.repository.MenuItemRepository;
 import com.foodhub.repository.OrderRepository;
 import com.foodhub.repository.RestaurantRepository;
 import com.foodhub.repository.UserRepository;
-import com.foodhub.security.HubUserDetailsService;
 import com.foodhub.util.HubSecurityUtil;
 import com.foodhub.util.HubUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,8 +30,13 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Service Implementation for Order Service
+ */
 @Service
 public class HubOrderService implements OrderService{
+
+    private Logger logger = LoggerFactory.getLogger(HubOrderService.class.getName());
 
     @Autowired
     UserRepository userRepository;
@@ -69,6 +75,8 @@ public class HubOrderService implements OrderService{
         );
         if(null != user.getRestaurantId()
                 && ! user.getRestaurantId().equals(restaurant.getRestaurantId())){
+            logger.error("Order Create Failed: User is not a customer/shop owner " +
+                    "OR shop owner placing order order for a different shop. ");
             throw new NotAuthorizedException(hubUtil.readMessage("hub.order.create.not.auth.restaurant"));
         }
         return saveOrder(request, user, restaurant);
@@ -91,9 +99,9 @@ public class HubOrderService implements OrderService{
         User shopUser = userRepository.findById(userId).orElse(null);
         if(null == shopUser
                 || ! shopUser.getRestaurantId().equals(restaurant.getRestaurantId())){
+            logger.error("Invalid Shop Owner OR Owner is trying to place order on a different shop.");
             throw new NotAuthorizedException(hubUtil.readMessage("hub.order.create.not.auth.restaurant"));
         }
-
         return saveOrder(request, user, restaurant);
     }
 
@@ -112,6 +120,7 @@ public class HubOrderService implements OrderService{
             MenuItem menuItem = menuItemRepository.findById(item.getItem()).orElse(null);
             if(null == menuItem ||
                     ! menuItem.getRestaurant().getRestaurantId().equals(request.getRestaurantId())){
+                logger.error("Item in the request does not belong to the restaurant. Bad request.");
                 throw new OrderCreateException(hubUtil.readMessage("hub.invalid.item.info"));
             }
             OrderItem orderItem = new OrderItem();
@@ -138,7 +147,7 @@ public class HubOrderService implements OrderService{
         order.setRestaurant(restaurant);
         order.setOrderItemsList(orderItems);
         orderRepository.save(order);
-
+        logger.debug("Order Created without any issues.");
         return order;
     }
 
@@ -166,15 +175,18 @@ public class HubOrderService implements OrderService{
         if(orderOwnerId != request.getCustomerId()
                 && ! customer.getRestaurantId().equals(order.getRestaurant().getRestaurantId())
                 && ! securityUtil.checkUserIsAdmin(userDetailsService, request.getCustomerId())){
+            logger.error("Not Authorized to order: Either requested by a different user, not by shop owner or not by Admin.");
             throw new NotAuthorizedException(hubUtil.readMessage("hub.order.update.not.auth")+ request.getOrderId());
         }
         // Check whether restaurant has already started working on the order
         if(order.getStatus().getValue() != 1){
+            logger.debug("Order is already in kitchen or advanced stage; cannot be cancelled.");
             return false;
         }
         // Cancel Order
         order.setStatus(OrderStatus.STATUS_CANCELLED);
         orderRepository.save(order);
+        logger.debug("Order Cancelled");
 
         return true;
     }
@@ -182,15 +194,18 @@ public class HubOrderService implements OrderService{
     @Override
     @Transactional
     public boolean statusUpdateOrder(OrderStatusUpdateRequest request) {
-
         Order order = orderRepository
                 .findById(request.getOrderId())
                 .orElseThrow(()-> new OrderNotFoundException(
                         hubUtil.readMessage("hub.order.not.found")+ request.getOrderId())
         );
-        if(request.getOrderStatus().getValue() < order.getStatus().getValue())  return false;
+        if(request.getOrderStatus().getValue() < order.getStatus().getValue())  {
+            logger.debug("Order Status cannot be backtracked.");
+            return false;
+        }
         order.setStatus(request.getOrderStatus());
         orderRepository.save(order);
+        logger.debug("Order Status Updated to "+ request.getOrderStatus());
 
         return true;
     }
@@ -198,9 +213,9 @@ public class HubOrderService implements OrderService{
     @Override
     @Transactional
     public List<Order> fetchOrders(Long userId) {
-
         User user = userRepository.findById(userId).orElse(null);
         if(null == user || null == user.getRestaurantId()){
+            logger.error("Invalid User or Restaurant Information.");
             throw new NotAuthorizedException(hubUtil.readMessage("hub.order.get.not.auth"));
         }
 
@@ -217,6 +232,7 @@ public class HubOrderService implements OrderService{
     public List<Order> fetchActiveOrders(Long userId) {
         User user = userRepository.findById(userId).orElse(null);
         if(null == user || null == user.getRestaurantId()){
+            logger.error("Invalid User or Restaurant Information.");
             throw new NotAuthorizedException(hubUtil.readMessage("hub.order.get.not.auth"));
         }
         Restaurant restaurant = restaurantRepository
@@ -230,7 +246,6 @@ public class HubOrderService implements OrderService{
     @Override
     @Transactional
     public Order fetchOrderById(Long userId, Long orderId) {
-
         Order order = orderRepository
                 .findById(orderId)
                 .orElseThrow(()->new OrderNotFoundException(
@@ -249,14 +264,18 @@ public class HubOrderService implements OrderService{
             || (null !=order.getRestaurant().getRestaurantId()
                     && order.getRestaurant().getRestaurantId().equals(user.getRestaurantId()))
             || securityUtil.checkUserIsAdmin(userDetailsService, userId)){
+            logger.debug("Order "+ orderId + " is sent back. ");
             return order;
         }
+        logger.debug("Order is not sent back. Either user not owns order and not " +
+                "fetched by restaurant and not fetched by admin. # "+ orderId);
         throw new NotAuthorizedException(hubUtil.readMessage("hub.order.get.not.auth"));
     }
 
     @Override
     @Transactional
     public List<Order> fetchReadyForPickUpOrders() {
+        logger.debug("Fetching Ready for PickUp orders.");
         return orderRepository.findByStatusEqualsOrderByRestaurant(OrderStatus.STATUS_READY);
     }
 
@@ -269,10 +288,13 @@ public class HubOrderService implements OrderService{
                         hubUtil.readMessage("hub.order.not.found")+ orderId)
         );
         if(3 != order.getStatus().getValue()){
+            logger.error("Order is not in READY status for pickup.");
             throw new OrderStatusNotifyException(hubUtil.readMessage("hub.order.not.ready.pickup"));
         }
         order.setStatus(OrderStatus.STATUS_PICKED_UP);
         orderRepository.save(order);
+
+        logger.debug("Order Status changed to "+ OrderStatus.STATUS_PICKED_UP.getDescription());
     }
 
     @Override
@@ -284,9 +306,33 @@ public class HubOrderService implements OrderService{
                         hubUtil.readMessage("hub.order.not.found")+ orderId)
         );
         if(4 != order.getStatus().getValue()){
+            logger.debug("Order is not picked up yet. "+ orderId);
             throw new OrderStatusNotifyException(hubUtil.readMessage("hub.order.not.picked.up"));
         }
         order.setStatus(OrderStatus.STATUS_DELIVERED);
         orderRepository.save(order);
+
+        logger.debug("Order Status changed to "+ OrderStatus.STATUS_DELIVERED.getDescription());
+    }
+
+    @Override
+    @Transactional
+    public Order fetchInvoiceOrder(Long userId, Long orderId) {
+        Order order = orderRepository
+                .findById(orderId)
+                .orElseThrow(() -> new OrderNotFoundException(
+                        hubUtil.readMessage("hub.order.not.found")+ orderId)
+        );
+        User user = userRepository
+                .findById(userId)
+                .orElseThrow(()-> new NotAuthorizedException(
+                        hubUtil.readMessage("hub.order.get.not.auth"))
+        );
+        if(order.getRestaurant().getRestaurantId().equals(user.getRestaurantId())){
+            logger.debug("Order details sent back.");
+            return order;
+        }
+        logger.error("Invoice requested for wrong restaurant : "+ order.getRestaurant().getRestaurantId());
+        throw new NotAuthorizedException(hubUtil.readMessage("hub.order.get.not.auth"));
     }
 }

@@ -16,6 +16,9 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.List;
 
+/**
+ * Service Implementation for Menu Service
+ */
 @Service
 public class HubMenuService implements MenuService{
 

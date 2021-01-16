@@ -5,11 +5,10 @@ import com.foodhub.entity.OrderStatus;
 import java.math.BigDecimal;
 import java.util.List;
 
+/**
+ * Payload Carrying Generic Order Response
+ */
 public class OrderResponse extends DeliveryOrderResponse{
-
-
-
-
 
     private BigDecimal subTotal;
     private BigDecimal tax;
@@ -22,8 +21,6 @@ public class OrderResponse extends DeliveryOrderResponse{
 
     private String deliveryPerson;
     private String deliveryPersonContact;
-
-
 
     List<String> orderItems;
 

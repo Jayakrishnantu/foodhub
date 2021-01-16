@@ -9,12 +9,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.support.WebExchangeBindException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import java.net.BindException;
-
+/**
+ * Controller Advice for handling various exceptions thrown from Food Hub Service
+ */
 @ControllerAdvice
 public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
 
@@ -23,11 +23,6 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
     @Autowired
     HubUtil hubUtil;
 
-    /**
-     * Handling the Access Denied Exception
-     * @param exception
-     * @return
-     */
     @ExceptionHandler(AccessDeniedException.class)
     public final ResponseEntity<ErrorMessage> handleAccessDeniedException(AccessDeniedException exception) {
 
@@ -41,11 +36,6 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
     }
 
-    /**
-     * Handling the Order Create Failure
-     * @param exception
-     * @return
-     */
     @ExceptionHandler(OrderCreateException.class)
     public final ResponseEntity<ErrorMessage> handleOrderCreateException(OrderCreateException exception) {
 
@@ -137,5 +127,19 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         response.setTimestamp(System.currentTimeMillis());
 
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(InvoiceGenerationException.class)
+    public final ResponseEntity<ErrorMessage> handleInvoiceGenerationException(
+            InvoiceGenerationException exception) {
+
+        logger.error(exception.getMessage());
+
+        ErrorMessage response = new ErrorMessage();
+        response.setStatus(HttpStatus.NOT_FOUND.value());
+        response.setMessage(exception.getMessage());
+        response.setTimestamp(System.currentTimeMillis());
+
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 }

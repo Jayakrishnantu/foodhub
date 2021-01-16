@@ -7,6 +7,9 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+/**
+ * Repository for Restaurant
+ */
 @Repository
 public interface RestaurantRepository extends JpaRepository<Restaurant, Long> {
 
