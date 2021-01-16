@@ -1,9 +1,7 @@
 package com.foodhub.controller;
 
-import ch.qos.logback.core.CoreConstants;
 import com.foodhub.entity.Order;
 import com.foodhub.exception.OrderCreateException;
-import com.foodhub.exception.OrderNotFoundException;
 import com.foodhub.payload.DeliveryOrderResponse;
 import com.foodhub.payload.OrderCancelRequest;
 import com.foodhub.payload.OrderCancelResponse;
@@ -21,7 +19,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -32,7 +29,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
-import java.math.RoundingMode;
 import java.util.List;
 
 @RestController
@@ -64,8 +60,7 @@ public class OrderController {
             logger.info(order.getRestaurant().toString());
 
             return new ResponseEntity<>(hubUtil.createOrderCreateResponse(order,
-                    "Order Confirmed. Please Contact us at (888) FOO-DHUB " +
-                            "in case of any questions/concerns."), HttpStatus.OK);
+                    hubUtil.readMessage("hub.order.create.success")), HttpStatus.OK);
         }else{
             logger.error("Order Creation failed.");
             throw new OrderCreateException("Issues with Order Creation, Please try again");
@@ -85,10 +80,10 @@ public class OrderController {
             logger.info("Order Created.");
             logger.info(order.getRestaurant().toString());
             return new ResponseEntity<>(hubUtil.createOrderCreateResponse(order,
-                    "Order Confirmed."), HttpStatus.OK);
+                    hubUtil.readMessage("hub.order.create.on.behalf.success")), HttpStatus.OK);
         }else{
             logger.error("Order Creation failed.");
-            throw new OrderCreateException("Issues with Order Creation, Please try again");
+            throw new OrderCreateException(hubUtil.readMessage("hub.order.create.failure"));
         }
     }
 
@@ -101,20 +96,15 @@ public class OrderController {
         request.setCustomerId(userId);
 
         boolean result = service.cancelOrder(request);
-
         OrderCancelResponse response = new OrderCancelResponse();
         response.setOrderId(request.getOrderId());
-
         if(result) {
             logger.info("Order Cancelled.");
-            response.setMessage("Order Cancelled. "+
-                    "Please Contact us at (888) FOO-DHUB, if you require further assistance.");
+            response.setMessage(hubUtil.readMessage("hub.order.cancel.success"));
         }else{
             logger.error("Order Creation failed.");
-            response.setMessage("Order can not be Cancelled. " +
-                    "Please Contact us at (888) FOO-DHUB, if you require further assistance.");
+            response.setMessage(hubUtil.readMessage("hub.order.cancel.failure"));
         }
-
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
@@ -126,10 +116,10 @@ public class OrderController {
 
         if(service.statusUpdateOrder(request)){
             logger.info("Order status updated.");
-            response.setMessage("Order Status Updated.");
+            response.setMessage(hubUtil.readMessage("hub.order.status.update.success"));
         }else{
             logger.info("Order status NOT updated.");
-            response.setMessage("Order Status NOT Updated.");
+            response.setMessage(hubUtil.readMessage("hub.order.status.update.failure"));
         }
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
@@ -166,13 +156,13 @@ public class OrderController {
     @PreAuthorize("hasRole('DRIVER')")
     public ResponseEntity<?> notifyOrderPickUp(@Valid @PathVariable(value = "orderId") Long orderId){
         service.notifyOrderPickUp(orderId);
-        return new ResponseEntity<>("Order Pickup Notified.", HttpStatus.OK);
+        return new ResponseEntity<>(hubUtil.readMessage("hub.order.pickup.notify"), HttpStatus.OK);
     }
 
     @PutMapping("/delivery/{orderId}")
     @PreAuthorize("hasRole('DRIVER')")
     public ResponseEntity<?> notifyOrderDelivery(@Valid @PathVariable(value = "orderId") Long orderId){
         service.notifyOrderDelivery(orderId);
-        return new ResponseEntity<>("Order Delivery Notified.", HttpStatus.OK);
+        return new ResponseEntity<>(hubUtil.readMessage("hub.order.delivery.notify"), HttpStatus.OK);
     }
 }

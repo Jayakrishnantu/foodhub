@@ -1,7 +1,9 @@
 package com.foodhub.exception;
 
+import com.foodhub.util.HubUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
@@ -18,6 +20,9 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
 
     Logger logger = LoggerFactory.getLogger(CustomExceptionHandler.class.getName());
 
+    @Autowired
+    HubUtil hubUtil;
+
     /**
      * Handling the Access Denied Exception
      * @param exception
@@ -30,7 +35,7 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
 
         ErrorMessage response = new ErrorMessage();
         response.setStatus(HttpStatus.FORBIDDEN.value());
-        response.setMessage("Access Denied: Insufficient privileges.");
+        response.setMessage(hubUtil.readMessage("hub.access.denied"));
         response.setTimestamp(System.currentTimeMillis());
 
         return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
@@ -114,7 +119,7 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
 
         ErrorMessage response = new ErrorMessage();
         response.setStatus(HttpStatus.BAD_REQUEST.value());
-        response.setMessage("Invalid input parameter(s).");
+        response.setMessage(hubUtil.readMessage("hub.invalid.input.parameters"));
         response.setTimestamp(System.currentTimeMillis());
 
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
