@@ -61,6 +61,6 @@ public class MenuController {
 
         MenuItem item = menuService.addMenuItem(userId, request);
         logger.info("Menu Item Created.");
-        return new ResponseEntity<>("Menu Item Created.", HttpStatus.OK);
+        return new ResponseEntity<>(hubUtil.readMessage("hub.menu.item.create.success"), HttpStatus.OK);
     }
 }

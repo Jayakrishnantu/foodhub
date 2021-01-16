@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import javax.ws.rs.NotAuthorizedException;
 import java.util.List;
 
 @Service
@@ -36,14 +35,15 @@ public class HubMenuService implements MenuService{
     @Transactional
     public MenuItem addMenuItem(Long userId, MenuItemRequest menuItem) {
 
-        Restaurant restaurant = restaurantRepository.findById(menuItem.getRestaurantId()).orElse(null);
-        if(null == restaurant){
-            throw new MenuItemCreateException("Invalid Restaurant : id # "+ menuItem.getRestaurantId());
-        }
+        Restaurant restaurant = restaurantRepository
+                .findById(menuItem.getRestaurantId())
+                .orElseThrow(() -> new MenuItemCreateException(
+                        hubUtil.readMessage("hub.menu.item.invalid.restaurant")+ menuItem.getRestaurantId())
+        );
 
         User user = userRepository.findById(userId).orElse(null);
         if(null == user || !user.getRestaurantId().equals(menuItem.getRestaurantId())){
-            throw new MenuItemCreateException("Not Authorized to create Menu for this restaurant ");
+            throw new MenuItemCreateException(hubUtil.readMessage("hub.menu.item.create.not.auth"));
         }
         MenuItem entity = hubUtil.createMenuItem(menuItem, restaurant);
         menuItemRepository.save(entity);
@@ -60,12 +60,11 @@ public class HubMenuService implements MenuService{
     @Transactional
     public List<MenuItem> fetchMenuByRestaurant(Long restaurantId) {
 
-        Restaurant restaurant = restaurantRepository.findById(restaurantId).orElse(null);
-
-        if(restaurant == null){
-            throw new MenuFetchException("Invalid Restaurant");
-        }
-
+        Restaurant restaurant = restaurantRepository
+                .findById(restaurantId)
+                .orElseThrow(()->new MenuFetchException(
+                        hubUtil.readMessage("hub.menu.item.invalid.restaurant")+ restaurantId)
+        );
         return menuItemRepository.findByRestaurant(restaurant);
     }
 }
