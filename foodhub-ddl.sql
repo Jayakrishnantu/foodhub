@@ -10,6 +10,18 @@ CREATE USER appadmin WITH ENCRYPTED PASSWORD 'admin123';
 GRANT ALL PRIVILEGES ON DATABASE foodhub TO appadmin;
 GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO appadmin;
 
+-- Create Restaurants
+DROP TABLE IF EXISTS restaurants;
+CREATE TABLE restaurants(
+	id serial PRIMARY KEY,
+	name VARCHAR(100) NOT NULL,
+	address VARCHAR(255) NOT NULL,
+	contact VARCHAR(255) NOT NULL
+);
+
+-- setting the restaurant id to start from 1001
+alter sequence restaurants_id_seq restart with 1000;
+
 --- Create Authentication tables
 
 DROP TABLE IF EXISTS users;
@@ -18,7 +30,8 @@ CREATE TABLE users(
 	name VARCHAR(100) NOT NULL,
 	username VARCHAR(50) NOT NULL,
 	password VARCHAR(255) NOT NULL,
-	contact VARCHAR(255) NOT NULL
+	contact VARCHAR(255) NOT NULL,
+	restaurant_id INTEGER
 );
 
 DROP TABLE IF EXISTS roles;
@@ -32,16 +45,6 @@ CREATE TABLE roles(
 	REFERENCES users(id)
 );
 
-DROP TABLE IF EXISTS restaurants;
-CREATE TABLE restaurants(
-	id serial PRIMARY KEY,
-	name VARCHAR(100) NOT NULL,
-	address VARCHAR(255) NOT NULL,
-	contact VARCHAR(255) NOT NULL
-);
-
--- setting the restaurant id to start from 1001
-alter sequence restaurants_id_seq restart with 1000;
 
 --- Create Items table
 
