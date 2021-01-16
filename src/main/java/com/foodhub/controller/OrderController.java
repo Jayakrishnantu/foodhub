@@ -199,4 +199,14 @@ public class OrderController {
                 .contentType(MediaType.APPLICATION_PDF)
                 .body(new InputStreamResource(pdfStream));
     }
+
+    @GetMapping("/status/{orderId}")
+    @PreAuthorize("hasAnyRole('SHOP','CUSTOMER', 'ADMIN')")
+    public ResponseEntity<?> fetchOrderStatus(@Valid @PathVariable(value = "orderId") Long orderId,
+                                              @RequestHeader("Authorization") String jwToken){
+        long userId = tokenGenerator.getUserIdFromJWT(hubUtil.getToken(jwToken));
+        return new ResponseEntity<>(hubUtil
+                .createOrderStatusResponse(orderId, service.fetchOrderStatus(userId, orderId)),
+                HttpStatus.OK );
+    }
 }

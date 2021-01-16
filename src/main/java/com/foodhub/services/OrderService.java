@@ -1,6 +1,7 @@
 package com.foodhub.services;
 
 import com.foodhub.entity.Order;
+import com.foodhub.entity.OrderStatus;
 import com.foodhub.payload.OrderCancelRequest;
 import com.foodhub.payload.OrderCancelResponse;
 import com.foodhub.payload.OrderCreateRequest;
@@ -34,4 +35,6 @@ public interface OrderService {
     public void notifyOrderDelivery(Long orderId);
 
     public Order fetchInvoiceOrder(Long userId, Long orderId);
+
+    public OrderStatus fetchOrderStatus(Long userId, Long orderId);
 }

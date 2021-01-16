@@ -4,12 +4,14 @@ import com.foodhub.constants.HubConstants;
 import com.foodhub.entity.MenuItem;
 import com.foodhub.entity.Order;
 import com.foodhub.entity.OrderItem;
+import com.foodhub.entity.OrderStatus;
 import com.foodhub.entity.Restaurant;
 import com.foodhub.payload.DeliveryOrderResponse;
 import com.foodhub.payload.MenuItemRequest;
 import com.foodhub.payload.MenuItemResponse;
 import com.foodhub.payload.OrderCreateResponse;
 import com.foodhub.payload.OrderResponse;
+import com.foodhub.payload.OrderStatusResponse;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
@@ -158,5 +160,7 @@ public class HubUtil implements HubConstants {
                 .setScale(2, RoundingMode.HALF_UP).toString();
     }
 
-
+    public OrderStatusResponse createOrderStatusResponse(Long orderId, OrderStatus status){
+        return  new OrderStatusResponse(orderId, status.getDescription());
+    }
 }

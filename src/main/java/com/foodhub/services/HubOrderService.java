@@ -335,4 +335,33 @@ public class HubOrderService implements OrderService{
         logger.error("Invoice requested for wrong restaurant : "+ order.getRestaurant().getRestaurantId());
         throw new NotAuthorizedException(hubUtil.readMessage("hub.order.get.not.auth"));
     }
+
+    @Override
+    @Transactional
+    public OrderStatus fetchOrderStatus(Long userId, Long orderId) {
+        Order order = orderRepository
+                .findById(orderId)
+                .orElseThrow(()->new OrderNotFoundException(
+                        hubUtil.readMessage("hub.order.not.found")+ orderId)
+                );
+        User user = userRepository
+                .findById(userId)
+                .orElseThrow(()-> new NotAuthorizedException(
+                        hubUtil.readMessage("hub.order.get.not.auth"))
+                );
+        // Allow the Order access, if:
+        // 1. User owns the order
+        // 2. Fetched by Restaurant
+        // 3. Fetched by FoodHub Admin
+        if(order.getUser().getId().equals(userId)
+                || (null !=order.getRestaurant().getRestaurantId()
+                && order.getRestaurant().getRestaurantId().equals(user.getRestaurantId()))
+                || securityUtil.checkUserIsAdmin(userDetailsService, userId)){
+            logger.debug("Order status for "+ orderId + " is sent back. ");
+            return order.getStatus();
+        }
+        logger.debug("Order Status is not sent back. Either user not owns order and not " +
+                "fetched by restaurant and not fetched by admin. # "+ orderId);
+        throw new NotAuthorizedException(hubUtil.readMessage("hub.order.get.not.auth"));
+    }
 }
