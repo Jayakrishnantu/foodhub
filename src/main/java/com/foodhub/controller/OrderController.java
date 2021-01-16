@@ -61,19 +61,11 @@ public class OrderController {
         Order order = service.createOrder(request);
         if(null != order && 0 != order.getOrderId()) {
             logger.info("Order Created.");
-            //TODO: Move to Util
             logger.info(order.getRestaurant().toString());
-            OrderCreateResponse response = new OrderCreateResponse(order.getOrderId(),
-                        order.getPrepTime(),
-                        order.getDeliveryTime(),
-                         "Order Confirmed. Please Contact us at (888) FOO-DHUB in case of any questions/concerns.",
-                        order.getItemTotal().setScale(2, RoundingMode.HALF_UP),
-                        order.getTax().setScale(2, RoundingMode.HALF_UP),
-                        order.getDeliveryCharge().setScale(2, RoundingMode.HALF_UP),
-                        order.getTotal().setScale(2, RoundingMode.HALF_UP),
-                        order.getRestaurant().getRestaurantName(),
-                        order.getUser().getUserName());
-            return new ResponseEntity<>(response, HttpStatus.OK);
+
+            return new ResponseEntity<>(hubUtil.createOrderCreateResponse(order,
+                    "Order Confirmed. Please Contact us at (888) FOO-DHUB " +
+                            "in case of any questions/concerns."), HttpStatus.OK);
         }else{
             logger.error("Order Creation failed.");
             throw new OrderCreateException("Issues with Order Creation, Please try again");
@@ -82,27 +74,18 @@ public class OrderController {
 
     @PostMapping("/createfor")
     @PreAuthorize("hasRole('SHOP')")
-    public ResponseEntity<OrderCreateResponse> createOrderOnBehalf(@RequestBody OrderCreateRequest request,
-                                                                   @RequestHeader("Authorization") String jwToken){
+    public ResponseEntity<OrderCreateResponse> createOrderOnBehalf(
+            @RequestBody OrderCreateRequest request,
+            @RequestHeader("Authorization") String jwToken){
 
         long userId = tokenGenerator.getUserIdFromJWT(hubUtil.getToken(jwToken));
         Order order = service.createOrderOnBehalf(request, userId);
 
         if(null != order && 0 != order.getOrderId()) {
             logger.info("Order Created.");
-            // TODO: Move to Util
             logger.info(order.getRestaurant().toString());
-            OrderCreateResponse response = new OrderCreateResponse(order.getOrderId(),
-                    order.getPrepTime(),
-                    order.getDeliveryTime(),
-                    "Order Confirmed.",
-                    order.getItemTotal().setScale(2, RoundingMode.HALF_UP),
-                    order.getTax().setScale(2, RoundingMode.HALF_UP),
-                    order.getDeliveryCharge().setScale(2, RoundingMode.HALF_UP),
-                    order.getTotal().setScale(2, RoundingMode.HALF_UP),
-                    order.getRestaurant().getRestaurantName(),
-                    order.getUser().getUserName());
-            return new ResponseEntity<>(response, HttpStatus.OK);
+            return new ResponseEntity<>(hubUtil.createOrderCreateResponse(order,
+                    "Order Confirmed."), HttpStatus.OK);
         }else{
             logger.error("Order Creation failed.");
             throw new OrderCreateException("Issues with Order Creation, Please try again");
