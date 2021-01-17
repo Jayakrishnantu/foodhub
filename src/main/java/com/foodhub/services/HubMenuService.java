@@ -48,6 +48,14 @@ public class HubMenuService implements MenuService{
         if(null == user || !user.getRestaurantId().equals(menuItem.getRestaurantId())){
             throw new MenuItemCreateException(hubUtil.readMessage("hub.menu.item.create.not.auth"));
         }
+
+        MenuItem item = menuItemRepository
+                .findByNameAndRestaurant(menuItem.getName(), restaurant);
+        if(null != item) {
+           throw new MenuItemCreateException(
+                    hubUtil.readMessage("hub.menu.item.create.already.exists"));
+        }
+
         MenuItem entity = hubUtil.createMenuItem(menuItem, restaurant);
         menuItemRepository.save(entity);
         return entity;
