@@ -36,21 +36,11 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
     }
 
-    @ExceptionHandler(OrderCreateException.class)
-    public final ResponseEntity<ErrorMessage> handleOrderCreateException(OrderCreateException exception) {
-
-        logger.error(exception.getMessage());
-
-        ErrorMessage response = new ErrorMessage();
-        response.setStatus(HttpStatus.BAD_REQUEST.value());
-        response.setMessage(exception.getMessage());
-        response.setTimestamp(System.currentTimeMillis());
-
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-    }
-
-    @ExceptionHandler(OrderNotFoundException.class)
-    public final ResponseEntity<ErrorMessage> handleOrderNotFoundException(OrderNotFoundException exception) {
+    @ExceptionHandler({
+            OrderNotFoundException.class,
+            InvoiceGenerationException.class
+    })
+    public final ResponseEntity<ErrorMessage> handleDataNotFoundException(Exception exception) {
 
         logger.error(exception.getMessage());
 
@@ -62,21 +52,14 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler(MenuItemCreateException.class)
-    public final ResponseEntity<ErrorMessage> handleMenuItemCreateException(MenuItemCreateException exception) {
-
-        logger.error(exception.getMessage());
-
-        ErrorMessage response = new ErrorMessage();
-        response.setStatus(HttpStatus.BAD_REQUEST.value());
-        response.setMessage(exception.getMessage());
-        response.setTimestamp(System.currentTimeMillis());
-
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-    }
-
-    @ExceptionHandler(MenuFetchException.class)
-    public final ResponseEntity<ErrorMessage> handleMenuFetchException(MenuFetchException exception) {
+    @ExceptionHandler({
+            MenuItemCreateException.class,
+            MenuItemException.class,
+            MenuFetchException.class,
+            OrderStatusNotifyException.class,
+            OrderCreateException.class
+    })
+    public final ResponseEntity<ErrorMessage> handleBadRequest(Exception exception) {
 
         logger.error(exception.getMessage());
 
@@ -89,7 +72,7 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(NotAuthorizedException.class)
-    public final ResponseEntity<ErrorMessage> handleOrderCancelException(NotAuthorizedException exception) {
+    public final ResponseEntity<ErrorMessage> handleUnauthorizedException(NotAuthorizedException exception) {
 
         logger.error(exception.getMessage());
 
@@ -113,33 +96,5 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         response.setTimestamp(System.currentTimeMillis());
 
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-    }
-
-    @ExceptionHandler(OrderStatusNotifyException.class)
-    public final ResponseEntity<ErrorMessage> handleOrderStatusNotifyException(
-            OrderStatusNotifyException exception) {
-
-        logger.error(exception.getMessage());
-
-        ErrorMessage response = new ErrorMessage();
-        response.setStatus(HttpStatus.BAD_REQUEST.value());
-        response.setMessage(exception.getMessage());
-        response.setTimestamp(System.currentTimeMillis());
-
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-    }
-
-    @ExceptionHandler(InvoiceGenerationException.class)
-    public final ResponseEntity<ErrorMessage> handleInvoiceGenerationException(
-            InvoiceGenerationException exception) {
-
-        logger.error(exception.getMessage());
-
-        ErrorMessage response = new ErrorMessage();
-        response.setStatus(HttpStatus.NOT_FOUND.value());
-        response.setMessage(exception.getMessage());
-        response.setTimestamp(System.currentTimeMillis());
-
-        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 }

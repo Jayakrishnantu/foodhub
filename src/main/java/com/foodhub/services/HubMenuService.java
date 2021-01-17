@@ -5,13 +5,16 @@ import com.foodhub.entity.Restaurant;
 import com.foodhub.entity.User;
 import com.foodhub.exception.MenuFetchException;
 import com.foodhub.exception.MenuItemCreateException;
+import com.foodhub.exception.MenuItemException;
 import com.foodhub.payload.MenuItemRequest;
+import com.foodhub.payload.MenuItemUpdateRequest;
 import com.foodhub.repository.MenuItemRepository;
 import com.foodhub.repository.RestaurantRepository;
 import com.foodhub.repository.UserRepository;
 import com.foodhub.util.HubUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import javax.transaction.Transactional;
 import java.util.List;
@@ -77,5 +80,46 @@ public class HubMenuService implements MenuService{
                         hubUtil.readMessage("hub.menu.item.invalid.restaurant")+ restaurantId)
         );
         return menuItemRepository.findByRestaurant(restaurant);
+    }
+
+    @Override
+    @Transactional
+    public boolean removeMenuItem(Long userId, Long itemId) {
+        MenuItem item = menuItemRepository
+                .findById(itemId)
+                .orElseThrow(()->
+                        new MenuItemException(hubUtil.readMessage("hub.menu.item.not.exists"))
+        );
+        User user = userRepository.findById(userId).orElse(null);
+        if(null == user || !user.getRestaurantId().equals(item.getRestaurant().getRestaurantId())){
+            throw new MenuItemException(hubUtil.readMessage("hub.menu.item.delete.not.auth"));
+        }
+
+        menuItemRepository.delete(item);
+        return true;
+    }
+
+    @Override
+    @Transactional
+    public MenuItem updateMenuItem(Long userId, Long itemId, MenuItemUpdateRequest request) {
+
+        MenuItem item = menuItemRepository
+                .findById(itemId)
+                .orElseThrow(() ->
+                        new MenuItemException(hubUtil.readMessage("hub.menu.item.not.exists"))
+                );
+        User user = userRepository.findById(userId).orElse(null);
+        if (null == user || !user.getRestaurantId().equals(item.getRestaurant().getRestaurantId())) {
+            throw new MenuItemException(hubUtil.readMessage("hub.menu.item.update.not.auth"));
+        }
+
+        if (StringUtils.hasText(request.getName())) item.setName(request.getName());
+        if (StringUtils.hasText(request.getDescription())) item.setDescription(request.getDescription());
+        if (null != request.getPrice()) item.setPrice(request.getPrice());
+        if (null != request.getPrepTime()) item.setPrepTime(request.getPrepTime());
+
+        menuItemRepository.save(item);
+
+        return item;
     }
 }

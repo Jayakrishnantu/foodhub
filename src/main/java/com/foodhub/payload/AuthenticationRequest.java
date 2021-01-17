@@ -1,5 +1,6 @@
 package com.foodhub.payload;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
@@ -9,11 +10,11 @@ import java.io.Serializable;
  */
 public class AuthenticationRequest implements Serializable {
 
-    @NotNull
+    @NotBlank(message="Usename cannot be blank")
     @Size(max=50)
     private String userName;
 
-    @NotNull
+    @NotBlank(message="Password cannot be blank")
     @Size(max = 50)
     private String password;
 
