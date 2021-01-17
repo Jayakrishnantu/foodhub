@@ -154,7 +154,7 @@ public class OrderController {
                                          @Valid @PathVariable(value = "orderId") Long orderId){
         long userId = tokenGenerator.getUserIdFromJWT(hubUtil.getToken(jwToken));
         logger.debug("Finding the order : "+ orderId);
-        return hubUtil.createOrderResponse(service.fetchOrderById(userId, orderId));
+            return hubUtil.createOrderResponse(service.fetchOrderById(userId, orderId));
     }
 
     @GetMapping("pickup")

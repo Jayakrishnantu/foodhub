@@ -5,38 +5,49 @@ package com.foodhub.payload;
  */
 public class OrderCreateItem {
 
-        private Long item;
-        private Integer qty;
+    private Long item;
+    private Integer qty;
+    private String instruction;
 
-        public OrderCreateItem() {
-        }
+    public OrderCreateItem() {
+    }
 
-        public OrderCreateItem(Long item, Integer qty) {
-            this.item = item;
-            this.qty = qty;
-        }
+    public OrderCreateItem(Long item, Integer qty, String instruction) {
+        this.item = item;
+        this.qty = qty;
+        this.instruction = instruction;
+    }
 
-        public Long getItem() {
-            return item;
-        }
+    public Long getItem() {
+        return item;
+    }
 
-        public void setItem(Long item) {
-            this.item = item;
-        }
+    public void setItem(Long item) {
+        this.item = item;
+    }
 
-        public Integer getQty() {
-            return qty;
-        }
+    public Integer getQty() {
+        return qty;
+    }
 
-        public void setQty(Integer qty) {
-            this.qty = qty;
-        }
+    public void setQty(Integer qty) {
+        this.qty = qty;
+    }
 
-        @Override
-        public String toString() {
-            return "Item{" +
-                    "item=" + item +
-                    ", qty=" + qty +
-                    '}';
-        }
+    public String getInstruction() {
+        return instruction;
+    }
+
+    public void setInstruction(String instruction) {
+        this.instruction = instruction;
+    }
+
+    @Override
+    public String toString() {
+        return "OrderCreateItem{" +
+                "item=" + item +
+                ", qty=" + qty +
+                ", instruction='" + instruction + '\'' +
+                '}';
+    }
 }

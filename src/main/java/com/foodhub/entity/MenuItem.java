@@ -36,6 +36,9 @@ public class MenuItem {
     @Column(name="prep_time")
     private Integer prepTime;
 
+    @Column(name="status")
+    private Integer status;
+
     @ManyToOne(cascade = {CascadeType.PERSIST,
             CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
     @JoinColumn(name = "restaurant_id")
@@ -45,12 +48,13 @@ public class MenuItem {
     }
 
     public MenuItem(String name, String description,
-                    BigDecimal price, Integer prepTime, Restaurant restaurant) {
+                    BigDecimal price, Integer prepTime, Restaurant restaurant, Integer status) {
         this.name = name;
         this.description = description;
         this.price = price;
         this.prepTime = prepTime;
         this.restaurant = restaurant;
+        this.status = status;
     }
 
     public long getId() {
@@ -99,5 +103,13 @@ public class MenuItem {
 
     public void setRestaurant(Restaurant restaurant) {
         this.restaurant = restaurant;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
     }
 }

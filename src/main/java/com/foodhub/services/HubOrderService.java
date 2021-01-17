@@ -118,15 +118,21 @@ public class HubOrderService implements OrderService{
 
         for(OrderCreateItem item: request.getItems()){
             MenuItem menuItem = menuItemRepository.findById(item.getItem()).orElse(null);
-            if(null == menuItem ||
-                    ! menuItem.getRestaurant().getRestaurantId().equals(request.getRestaurantId())){
+            if(null == menuItem
+                    || ! menuItem.getRestaurant().getRestaurantId().equals(request.getRestaurantId())){
                 logger.error("Item in the request does not belong to the restaurant. Bad request.");
-                throw new OrderCreateException(hubUtil.readMessage("hub.invalid.item.info"));
+                throw new OrderCreateException(hubUtil.readMessage("hub.order.create.invalid.item.info"));
+            }
+            if(1 != menuItem.getStatus()){
+                logger.error("Item in the request jo longer available on the menu. Bad Request");
+                throw new OrderCreateException(hubUtil.readMessage("hub.order.create.item.not.available")+ menuItem.getId());
             }
             OrderItem orderItem = new OrderItem();
             orderItem.setOrder(order);
             orderItem.setQty(item.getQty());
             orderItem.setItem(menuItem);
+            orderItem.setInstruction(item.getInstruction());
+
             int prepTime = hubUtil.findPrepTime(item.getQty(), menuItem.getPrepTime());
             orderPrepTime += prepTime;
             orderItem.setPrepTime(prepTime);
@@ -145,7 +151,8 @@ public class HubOrderService implements OrderService{
         order.setTax(orderTax);
         order.setTotal(orderTotal);
         order.setRestaurant(restaurant);
-        order.setOrderItemsList(orderItems);
+        order.setOrderItemList(orderItems);
+        order.setInstruction(request.getInstruction());
         orderRepository.save(order);
         logger.debug("Order Created without any issues.");
         return order;

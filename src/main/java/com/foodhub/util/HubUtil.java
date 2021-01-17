@@ -45,7 +45,8 @@ public class HubUtil implements HubConstants {
                 menuItem.getDescription(),
                 menuItem.getPrice(),
                 menuItem.getPrepTime(),
-                restaurant);
+                restaurant,
+                1);
     }
 
     public List<MenuItemResponse> createMenuItemResponse(List<MenuItem> menuItems){
@@ -53,7 +54,8 @@ public class HubUtil implements HubConstants {
         for(MenuItem item: menuItems){
             MenuItemResponse response = new MenuItemResponse(item.getId(), item.getName(),
                     item.getDescription(), item.getPrice(), item.getPrepTime(),
-                    item.getRestaurant().getRestaurantId(), item.getRestaurant().getRestaurantName());
+                    item.getRestaurant().getRestaurantId(), item.getRestaurant().getRestaurantName(),
+                    item.getStatus());
             responses.add(response);
         }
         return responses;
@@ -87,12 +89,15 @@ public class HubUtil implements HubConstants {
             response.setDeliveryPerson("Not Assigned");
             response.setDeliveryPersonContact("Not Available");
         }
+        response.setInstruction(order.getInstruction());
         response.setRestaurantName(order.getRestaurant().getRestaurantName());
         response.setRestaurantAddress(order.getRestaurant().getRestaurantAddress());
         response.setRestaurantContactInfo(order.getRestaurant().getRestaurantContactInfo());
         List<String> items = new ArrayList<>();
-        for(OrderItem item: order.getOrderItemsList()){
-            items.add("Item: "+ item.getItem().getName()+", Qty: "+ item.getQty());
+        for(OrderItem item: order.getOrderItemList()){
+            items.add("Item: "+ item.getItem().getName()
+                    +", Qty: "+ item.getQty()
+                    +", Instruction: "+ item.getInstruction());
         }
         response.setOrderItems(items);
 
@@ -146,7 +151,8 @@ public class HubUtil implements HubConstants {
                 order.getDeliveryCharge().setScale(2, RoundingMode.HALF_UP),
                 order.getTotal().setScale(2, RoundingMode.HALF_UP),
                 order.getRestaurant().getRestaurantName(),
-                order.getUser().getUserName());
+                order.getUser().getUserName(),
+                order.getInstruction());
 
         return response;
     }

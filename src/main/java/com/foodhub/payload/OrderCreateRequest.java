@@ -25,15 +25,18 @@ public class OrderCreateRequest {
     @DecimalMin(value = "0.0", inclusive = false)
     private BigDecimal distance;
 
+    private String instruction;
+
     @NotNull
     private Long restaurantId;
 
     public OrderCreateRequest(int customerId, String address,
-                              List<OrderCreateItem> items, Long restaurantId) {
+                              List<OrderCreateItem> items, Long restaurantIdm, String instruction) {
         this.customerId = customerId;
         this.address = address;
         this.items = items;
         this.restaurantId = restaurantId;
+        this.instruction = instruction;
     }
 
     public OrderCreateRequest() {
@@ -77,5 +80,13 @@ public class OrderCreateRequest {
 
     public void setRestaurantId(Long restaurantId) {
         this.restaurantId = restaurantId;
+    }
+
+    public String getInstruction() {
+        return instruction;
+    }
+
+    public void setInstruction(String instruction) {
+        this.instruction = instruction;
     }
 }

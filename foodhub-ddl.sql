@@ -20,7 +20,7 @@ CREATE TABLE restaurants(
 );
 
 -- setting the restaurant id to start from 1001
-alter sequence restaurants_id_seq restart with 1000;
+alter sequence restaurants_id_seq restart with 1001;
 
 --- Create Authentication tables
 
@@ -56,6 +56,7 @@ CREATE TABLE items(
 	item_price NUMERIC(5,2) DEFAULT 0.0,
 	prep_time INTEGER DEFAULT 5,
 	restaurant_id INTEGER NOT NULL,
+	status INTEGER NOT NULL,
 	CONSTRAINT fk_item_restaurant
 	FOREIGN KEY(restaurant_id)
 	REFERENCES restaurants(id)
@@ -76,6 +77,7 @@ CREATE TABLE orders(
 	status VARCHAR(25) NOT NULL,
 	delivery_by INTEGER,
 	restaurant_id INTEGER,
+	instruction VARCHAR(255),
 	CONSTRAINT fk_delivery_user
 	FOREIGN KEY(delivery_by)
 	REFERENCES users(id),
@@ -88,7 +90,7 @@ CREATE TABLE orders(
 );
 
 -- setting the order id to start from 1001
-alter sequence orders_id_seq restart with 1000;
+alter sequence orders_id_seq restart with 1001;
 
 -- Create Order details table
 
@@ -99,6 +101,7 @@ CREATE TABLE orderitems(
 	item_id INTEGER NOT NULL,
 	quantity INTEGER DEFAULT 1,
 	prep_time NUMERIC(3) DEFAULT 5,
+	instruction VARCHAR(255),
 	CONSTRAINT fk_orders_id
 	FOREIGN KEY(orders_id)
 	REFERENCES orders(id),
@@ -108,4 +111,4 @@ CREATE TABLE orderitems(
 );
 
 -- setting order items id to start from 1001
-alter sequence orderitems_id_seq restart with 1000;
+alter sequence orderitems_id_seq restart with 1001;

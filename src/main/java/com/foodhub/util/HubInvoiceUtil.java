@@ -93,7 +93,7 @@ public class HubInvoiceUtil implements HubConstants {
         bodyTable.addCell(createPdfTableCell(TABLE_HEAD_PRICE, headFont, Element.ALIGN_RIGHT,
                 NEGATIVE_ONE, Rectangle.BOX));
 
-        for(OrderItem item: order.getOrderItemsList()){
+        for(OrderItem item: order.getOrderItemList()){
             bodyTable.addCell(createPdfTableCell(item.getItem().getName(), null, Element.ALIGN_LEFT,
                     Element.ALIGN_MIDDLE, Rectangle.BOX));
             bodyTable.addCell(createPdfTableCell(String.valueOf(item.getQty()), null, Element.ALIGN_CENTER,

@@ -20,12 +20,14 @@ public class OrderCreateResponse {
     private String restaurant;
     private String userName;
 
+    private String instruction;
+
     public OrderCreateResponse() {
     }
 
     public OrderCreateResponse(Long orderId, Integer prepTime, Integer deliveryTime, String message,
                                BigDecimal orderSubTotal, BigDecimal orderTax, BigDecimal orderDeliveryCharge,
-                               BigDecimal orderTotal, String restaurant, String userName) {
+                               BigDecimal orderTotal, String restaurant, String userName, String instruction) {
         this.orderId = orderId;
         this.prepTime = prepTime;
         this.deliveryTime = deliveryTime;
@@ -36,6 +38,7 @@ public class OrderCreateResponse {
         this.orderTotal = orderTotal;
         this.restaurant = restaurant;
         this.userName = userName;
+        this.instruction = instruction;
     }
 
     public Long getOrderId() {
@@ -116,5 +119,13 @@ public class OrderCreateResponse {
 
     public void setUserName(String userName) {
         this.userName = userName;
+    }
+
+    public String getInstruction() {
+        return instruction;
+    }
+
+    public void setInstruction(String instruction) {
+        this.instruction = instruction;
     }
 }

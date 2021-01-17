@@ -14,6 +14,7 @@ public class MenuItemResponse {
     private Integer prepTime;
     private Long restaurantId;
     private String restaurantName;
+    private Integer status;
 
     public MenuItemResponse() {
     }
@@ -21,7 +22,8 @@ public class MenuItemResponse {
     public MenuItemResponse(Long itemId, String itemName,
                             String description, BigDecimal price,
                             Integer prepTime, Long restaurantId,
-                            String restaurantName) {
+                            String restaurantName,
+                            Integer status) {
         this.itemId = itemId;
         this.itemName = itemName;
         this.description = description;
@@ -29,6 +31,7 @@ public class MenuItemResponse {
         this.prepTime = prepTime;
         this.restaurantId = restaurantId;
         this.restaurantName = restaurantName;
+        this.status = status;
     }
 
     public Long getItemId() {
@@ -85,5 +88,13 @@ public class MenuItemResponse {
 
     public void setRestaurantName(String restaurantName) {
         this.restaurantName = restaurantName;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
     }
 }

@@ -94,8 +94,9 @@ public class HubMenuService implements MenuService{
         if(null == user || !user.getRestaurantId().equals(item.getRestaurant().getRestaurantId())){
             throw new MenuItemException(hubUtil.readMessage("hub.menu.item.delete.not.auth"));
         }
-
-        menuItemRepository.delete(item);
+        // Item Marked for deletion
+        item.setStatus(0);
+        menuItemRepository.save(item);
         return true;
     }
 

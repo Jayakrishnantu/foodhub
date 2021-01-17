@@ -58,6 +58,9 @@ public class Order {
     @Column(name = "status")
     private OrderStatus status;
 
+    @Column(name = "instruction")
+    private String instruction;
+
     @ManyToOne(cascade = {CascadeType.PERSIST,
             CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
     @JoinColumn(name = "delivery_by")
@@ -162,20 +165,28 @@ public class Order {
         this.deliveryBy = deliveryBy;
     }
 
-    public List<OrderItem> getOrderItemsList() {
-        return orderItemList;
-    }
-
-    public void setOrderItemsList(List<OrderItem> orderItemList) {
-        this.orderItemList = orderItemList;
-    }
-
     public Restaurant getRestaurant() {
         return restaurant;
     }
 
     public void setRestaurant(Restaurant restaurant) {
         this.restaurant = restaurant;
+    }
+
+    public String getInstruction() {
+        return instruction;
+    }
+
+    public void setInstruction(String instruction) {
+        this.instruction = instruction;
+    }
+
+    public List<OrderItem> getOrderItemList() {
+        return orderItemList;
+    }
+
+    public void setOrderItemList(List<OrderItem> orderItemList) {
+        this.orderItemList = orderItemList;
     }
 
     @Override
@@ -191,6 +202,7 @@ public class Order {
                 ", prepTime=" + prepTime +
                 ", deliveryTime=" + deliveryTime +
                 ", status=" + status +
+                ", instruction='" + instruction + '\'' +
                 ", deliveryBy=" + deliveryBy +
                 ", restaurant=" + restaurant +
                 ", orderItemList=" + orderItemList +

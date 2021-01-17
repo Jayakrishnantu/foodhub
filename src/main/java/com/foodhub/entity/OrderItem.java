@@ -40,14 +40,19 @@ public class OrderItem {
     @Column(name="prep_time")
     private int prepTime;
 
+    @Column(name="instruction")
+    private String instruction;
+
     public OrderItem() {
     }
 
-    public OrderItem(Order order, MenuItem item, int qty, int prepTime) {
+    public OrderItem(Order order, MenuItem item,
+                     int qty, int prepTime, String instruction) {
         this.order = order;
         this.item = item;
         this.qty = qty;
         this.prepTime = prepTime;
+        this.instruction = instruction;
     }
 
     public int getOrderItemsId() {
@@ -88,5 +93,13 @@ public class OrderItem {
 
     public void setPrepTime(int prepTime) {
         this.prepTime = prepTime;
+    }
+
+    public String getInstruction() {
+        return instruction;
+    }
+
+    public void setInstruction(String instruction) {
+        this.instruction = instruction;
     }
 }

@@ -22,6 +22,8 @@ public class OrderResponse extends DeliveryOrderResponse{
     private String deliveryPerson;
     private String deliveryPersonContact;
 
+    private String instruction;
+
     List<String> orderItems;
 
     public OrderResponse() {
@@ -97,5 +99,13 @@ public class OrderResponse extends DeliveryOrderResponse{
 
     public void setDeliveryPersonContact(String deliveryPersonContact) {
         this.deliveryPersonContact = deliveryPersonContact;
+    }
+
+    public String getInstruction() {
+        return instruction;
+    }
+
+    public void setInstruction(String instruction) {
+        this.instruction = instruction;
     }
 }
