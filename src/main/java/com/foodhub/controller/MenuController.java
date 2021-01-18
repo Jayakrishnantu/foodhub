@@ -60,7 +60,7 @@ public class MenuController {
 
     @PostMapping("/additem")
     @PreAuthorize("hasRole('SHOP')")
-    public ResponseEntity<?> addMenuItem(@RequestBody MenuItemRequest request,
+    public ResponseEntity<?> addMenuItem(@Valid @RequestBody MenuItemRequest request,
                                          @RequestHeader("Authorization") String jwToken){
         long userId = tokenGenerator.getUserIdFromJWT(hubUtil.getToken(jwToken));
         MenuItem item = menuService.addMenuItem(userId, request);
@@ -86,7 +86,7 @@ public class MenuController {
     @PutMapping("/item/{id}")
     @PreAuthorize("hasRole('SHOP')")
     public MenuItem updateMenuItem(@Valid @PathVariable("id") Long itemId,
-                                   @RequestBody MenuItemUpdateRequest request,
+                                   @Valid @RequestBody MenuItemUpdateRequest request,
                                    @RequestHeader("Authorization") String jwToken) {
         long userId = tokenGenerator.getUserIdFromJWT(hubUtil.getToken(jwToken));
         return menuService.updateMenuItem(userId, itemId, request);

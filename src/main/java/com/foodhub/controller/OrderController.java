@@ -59,7 +59,7 @@ public class OrderController {
 
     @PostMapping("/create")
     @PreAuthorize("hasRole('CUSTOMER')")
-    public ResponseEntity<OrderCreateResponse> createOrder(@RequestBody OrderCreateRequest request,
+    public ResponseEntity<OrderCreateResponse> createOrder(@Valid @RequestBody OrderCreateRequest request,
                                                            @RequestHeader("Authorization") String jwToken){
 
         long userId = tokenGenerator.getUserIdFromJWT(hubUtil.getToken(jwToken));
@@ -79,7 +79,7 @@ public class OrderController {
     @PostMapping("/createfor")
     @PreAuthorize("hasRole('SHOP')")
     public ResponseEntity<OrderCreateResponse> createOrderOnBehalf(
-            @RequestBody OrderCreateRequest request,
+            @Valid @RequestBody OrderCreateRequest request,
             @RequestHeader("Authorization") String jwToken){
 
         long userId = tokenGenerator.getUserIdFromJWT(hubUtil.getToken(jwToken));
@@ -97,7 +97,7 @@ public class OrderController {
 
     @PutMapping("/cancel")
     @PreAuthorize("hasAnyRole('SHOP','CUSTOMER', 'ADMIN')")
-    public ResponseEntity<?> createOrder(@RequestBody OrderCancelRequest request,
+    public ResponseEntity<?> createOrder(@Valid @RequestBody OrderCancelRequest request,
                                          @RequestHeader("Authorization") String jwToken){
 
         long userId = tokenGenerator.getUserIdFromJWT(hubUtil.getToken(jwToken));
@@ -118,7 +118,7 @@ public class OrderController {
 
     @PutMapping("/status")
     @PreAuthorize("hasRole('SHOP')")
-    public ResponseEntity<?> updateOrderStatus(@RequestBody OrderStatusUpdateRequest request){
+    public ResponseEntity<?> updateOrderStatus(@Valid @RequestBody OrderStatusUpdateRequest request){
 
         OrderStatusUpdateResponse response = new OrderStatusUpdateResponse();
 

@@ -1,6 +1,7 @@
 package com.foodhub.payload;
 
-import javax.validation.constraints.NotNull;
+import com.sun.istack.NotNull;
+
 import javax.validation.constraints.Size;
 import java.math.BigDecimal;
 
@@ -9,10 +10,10 @@ import java.math.BigDecimal;
  */
 public class MenuItemUpdateRequest {
 
-    @Size(max=50)
+    @NotNull
     private String name;
 
-    @Size(max=255)
+    @Size(max=255,message = "Description cannot exceed 255 characters.")
     private String description;
 
     private BigDecimal price;

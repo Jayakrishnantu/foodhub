@@ -1,5 +1,7 @@
 package com.foodhub.payload;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.math.BigDecimal;
@@ -9,17 +11,17 @@ import java.math.BigDecimal;
  */
 public class MenuItemRequest {
 
-    @NotNull
-    @Size(max=50)
+    @NotBlank(message="Item name cannot be blank")
+    @Size(min=5, max=50, message = "Item name must be of 5-20 characters.")
     private String name;
 
-    @Size(max=255)
+    @Size(max=255, message = "Description cannot exceed 255 characters.")
     private String description;
 
-    @NotNull
+    @NotNull(message = "Price cannot be empty.")
     private BigDecimal price;
 
-    @NotNull
+    @NotNull(message = "Prep Time cannot be empty.")
     private Integer prepTime;
 
     @NotNull

@@ -1,6 +1,7 @@
 package com.foodhub.payload;
 
 import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.math.BigDecimal;
@@ -11,17 +12,17 @@ import java.util.List;
  */
 public class OrderCreateRequest {
 
-    @NotNull
+    @NotNull(message = "Customer Id cannot be empty.")
     private long customerId;
 
-    @NotNull
-    @Size(max= 255)
+    @NotEmpty(message = "Price cannot be empty.")
+    @Size(max= 255, message = "Address cannot exceed 255 characters.")
     private String address;
 
-    @Size(min=1)
+    @Size(min=1, message = "At least one Order Item must be present.")
     private List<OrderCreateItem> items;
 
-    @NotNull
+    @NotNull(message = "Distance cannot be empty.")
     @DecimalMin(value = "0.0", inclusive = false)
     private BigDecimal distance;
 

@@ -11,11 +11,11 @@ import java.io.Serializable;
 public class AuthenticationRequest implements Serializable {
 
     @NotBlank(message="Usename cannot be blank")
-    @Size(max=50)
+    @Size(min =5, max=50, message = "Username must be of 5-50 characters.")
     private String userName;
 
     @NotBlank(message="Password cannot be blank")
-    @Size(max = 50)
+    @Size(min=5, max = 20, message = "Password must be of 5-20 characters.")
     private String password;
 
     public AuthenticationRequest() {

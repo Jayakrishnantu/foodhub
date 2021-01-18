@@ -62,7 +62,7 @@ public class FoodHubSecurity extends WebSecurityConfigurerAdapter {
         http.cors().and().csrf().disable()
                 .authorizeRequests()
                     .antMatchers("/api/user/authenticate").permitAll()
-                    .antMatchers("/api/order/invoice/**").permitAll()
+                    .antMatchers("/api/user/register").permitAll()
                     //.antMatchers("/api/test/**").permitAll()
                 .anyRequest().authenticated()
                 .and()

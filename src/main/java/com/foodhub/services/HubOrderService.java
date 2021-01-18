@@ -180,7 +180,7 @@ public class HubOrderService implements OrderService{
         //  3. Not by a FoodHub Admin.
         long orderOwnerId = order.getUser().getId();
         if(orderOwnerId != request.getCustomerId()
-                && ! customer.getRestaurantId().equals(order.getRestaurant().getRestaurantId())
+                && ! (order.getRestaurant().getRestaurantId().equals(customer.getRestaurantId()))
                 && ! securityUtil.checkUserIsAdmin(userDetailsService, request.getCustomerId())){
             logger.error("Not Authorized to order: Either requested by a different user, not by shop owner or not by Admin.");
             throw new NotAuthorizedException(hubUtil.readMessage("hub.order.update.not.auth")+ request.getOrderId());

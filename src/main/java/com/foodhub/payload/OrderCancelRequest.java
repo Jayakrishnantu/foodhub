@@ -1,5 +1,6 @@
 package com.foodhub.payload;
 
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 /**
@@ -7,8 +8,9 @@ import javax.validation.constraints.Size;
  */
 public class OrderCancelRequest {
 
-    @NotNull
+    @NotNull(message = "orderId cannot be empty.")
     private Long orderId;
+
     private Long customerId;
 
     public OrderCancelRequest() {

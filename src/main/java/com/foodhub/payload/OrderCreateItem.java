@@ -1,12 +1,19 @@
 package com.foodhub.payload;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+
 /**
  * Payload Carrying Create Item Request
  */
 public class OrderCreateItem {
 
+    @NotNull(message = "Item cannot be empty")
     private Long item;
+
+    @NotNull(message = "Quantity Cannot be empty")
     private Integer qty;
+
     private String instruction;
 
     public OrderCreateItem() {

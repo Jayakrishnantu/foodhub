@@ -17,4 +17,9 @@ public interface HubConstants {
     public final String TABLE_TAX_AMNT = "Tax:";
     public final String TABLE_DELIVERY_CHARGE = "Delivery Charge:";
     public final String TABLE_TOTAL_AMNT = "Total:";
+
+    public final String USER_TYPE_CUSTOMER = "customer";
+    public final String USER_TYPE_ADMIN = "admin";
+    public final String USER_TYPE_SHOP = "shop";
+    public final String USER_TYPE_DRIVER = "driver";
 }

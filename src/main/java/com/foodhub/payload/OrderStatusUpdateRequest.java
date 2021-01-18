@@ -2,6 +2,7 @@ package com.foodhub.payload;
 
 import com.foodhub.entity.OrderStatus;
 
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -9,10 +10,10 @@ import javax.validation.constraints.NotNull;
  */
 public class OrderStatusUpdateRequest {
 
-    @NotNull
+    @NotNull(message = "Order Id cannot be empty.")
     private Long orderId;
 
-    @NotNull
+    @NotNull(message = "Order Status cannot be empty.")
     private OrderStatus orderStatus;
 
     public OrderStatusUpdateRequest() {

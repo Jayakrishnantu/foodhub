@@ -52,6 +52,13 @@ public class User {
         this.restaurantId = restaurantId;
     }
 
+    public void addRole(Role role){
+        if(null == roles){
+            roles = new HashSet<>();
+        }
+        roles.add(role);
+    }
+
     public Long getId() {
         return id;
     }
